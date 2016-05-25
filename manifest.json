@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+
+  "name": "442 muter",
+  "description": "This extension allows you to mute annoying users on the AU fourfourtwo forums",
+  "version": "0.1",
+  "options_page": "options.html",
+  "content_scripts": [
+   {
+     "matches": ["http://au.fourfourtwo.com/forums/*"],
+     "js": ["jquery.js", "mute.js"]
+   }
+ ],
+  "permissions": [
+    "activeTab",
+    "https://ajax.googleapis.com/",
+    "storage"
+  ]
+}
