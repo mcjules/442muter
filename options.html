@@ -1,19 +1,81 @@
 <!DOCTYPE html>
 <html>
-<head><title>442 Muter Options</title></head>
+
+<head>
+    <title>442 Muter Options</title>
+    <style type="text/css">
+        body {
+            font-size: 16px;
+        }
+
+        h1 {
+            background-color: #DDDDDD;
+            border: black 1px solid;
+            padding: 3px;
+        }
+
+        th,
+        td {
+            padding: 3px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
+
+        th {
+            background-color: #333333;
+            color: white;
+        }
+
+        button {
+            margin-top: 1.0em;
+            padding: 0.5em 1em 0.5em 1em;
+        }
+    </style>
+
+</head>
+
 <body>
-<table>
-  <thead><tr><th>Username</th><th>User Id</th><th></th></tr></thead>
-  <tbody id="userBody"></tbody>
-</table>
+    <h1>Manage muted users</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>User Id</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="userBody"></tbody>
+    </table>
+
+    <h1>Manage muted threads</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Thread Name</th>
+                <th>Thread Id</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="threadBody"></tbody>
+    </table>
+
+    <h1>Options</h1>
+    <label>
+        <input type="checkbox" id="muteQuotes"> Mute posts that contain quotes from a muted user.
+    </label>
 
 
-<div id="status"></div>
 
+    <div id="status"></div>
+    <button id="save" style="margin-top:1.0em">Save</button>
 
-<script src="jquery.js"></script>
-<script src="options.js"></script>
+    <script src="jquery.js"></script>
+    <script src="options.js"></script>
 
 
 </body>
+
 </html>
