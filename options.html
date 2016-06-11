@@ -65,8 +65,19 @@
     <h1>Options</h1>
     <label>
         <input type="checkbox" id="muteQuotes"> Mute posts that contain quotes from a muted user.
+    </label><br/>
+    <label>
+        <input type="checkbox" id="moderniseYoutubeVids"> Give Youtube videos the modern interface. &nbsp;
+        <label id="displaySize">
+        Video player size:&nbsp;
+        <select style="display:none" id="layout-options">
+          <option value="default" data-width="560" data-height="315">560 x 315</option>
+          <option value="medium" data-width="640" data-height="360">640 x 360</option>
+          <option value="large" data-width="853" data-height="480">853 x 480</option>
+          <option value="hd720" data-width="1280" data-height="720">1280 x 720</option>
+        </select>
+      </label>
     </label>
-
 
 
     <div id="status"></div>

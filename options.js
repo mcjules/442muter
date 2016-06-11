@@ -1,6 +1,9 @@
 // Saves options to chrome.storage
 function save_options() {
     records.muteQuotes = $("#muteQuotes")[0].checked;
+    records.moderniseYoutubeVids =$("#moderniseYoutubeVids")[0].checked;
+    records.youtubeVideoHeight= $('#layout-options option:selected').attr('data-height');
+    records.youtubeVideoWidth= $('#layout-options option:selected').attr('data-width');
     chrome.storage.sync.set(records, function() {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
@@ -31,13 +34,16 @@ function restore_options() {
     chrome.storage.sync.get({
         ids: '',
         users: [],
-        threads:[],
-        muteQuotes:false
+        threads: [],
+        muteQuotes: false,
+        moderniseYoutubeVids:false,
+        youtubeVideoHeight:360,
+        youtubeVideoWidth:640
     }, function(items) {
         records = items;
         if (items.users.length == 0) {
-          $('#userBody').parent().after("<div>No users are currently muted</div>");
-          $('#userBody').parent().remove();
+            $('#userBody').parent().after("<div>No users are currently muted</div>");
+            $('#userBody').parent().remove();
         }
 
         for (var i = 0; i < items.users.length; i++) {
@@ -46,14 +52,24 @@ function restore_options() {
         $('.removeUserLink').click(removeUser);
 
         if (items.threads.length == 0) {
-          $('#threadBody').parent().after("<div>No threads are currently muted</div>");
-          $('#threadBody').parent().remove();
+            $('#threadBody').parent().after("<div>No threads are currently muted</div>");
+            $('#threadBody').parent().remove();
         }
         for (var i = 0; i < items.threads.length; i++) {
             $('#threadBody').append($('<tr>').append($('<td>').text(items.threads[i].threadName)).append($('<td>').text(items.threads[i].threadId)).append($('<td>').html("<a class='removeThreadLink' href='javascript:void 0' index='" + i + "'>Remove</a>")));
         }
         $('.removeThreadLink').click(removeThread);
         $("#muteQuotes")[0].checked = items.muteQuotes;
+        $("#moderniseYoutubeVids").change(function() {
+            if(this.checked == true) {
+              $('#layout-options').show();
+            } else {
+              $('#layout-options').hide();
+            }
+        })
+        $("#moderniseYoutubeVids")[0].checked = items.moderniseYoutubeVids;
+        $("#moderniseYoutubeVids").change();
+        $('#layout-options option[data-height='+items.youtubeVideoHeight+']').attr('selected','selected');
     });
 }
 document.addEventListener('DOMContentLoaded', restore_options);

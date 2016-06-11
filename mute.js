@@ -1,23 +1,27 @@
-if (location.search.split('g=')[1].split("&")[0] == "posts" || location.search.split('g=')[1].split("&")[0] == "topics" || location.search.split('g=')[1].split("&")[0] == "active") {
+var gParameter = location.search.split('g=')[1].split("&")[0];
+if (gParameter == "posts" || gParameter == "topics" || gParameter == "active" || gParameter == "postmessage") {
     chrome.storage.sync.get({
         users: [],
         threads: [],
-        muteQuotes: false
+        muteQuotes: false,
+        moderniseYoutubeVids: false,
+        youtubeVideoHeight: 360,
+        youtubeVideoWidth: 640
     }, function(items) {
-        $('p.navlinks').append('<span style="position: absolute; right: 1em;"><a href="javascript:void 0" id="showMuteButtons">Show mute buttons</a><a href="javascript:void 0" id="hideMuteButtons" style="display:none">Hide mute buttons</a>');
-        $('#showMuteButtons').click(function() {
+        $('p.navlinks').append('<span style="position: absolute; right: 1em;"><a href="javascript:void 0" class="showMuteButtons">Show mute buttons</a><a href="javascript:void 0" class="hideMuteButtons" style="display:none">Hide mute buttons</a>');
+        $('.showMuteButtons').click(function() {
             $(".muteThread").show();
             $(".muteUser").show();
-            $('#showMuteButtons').hide();
-            $('#hideMuteButtons').show();
+            $('.showMuteButtons').hide();
+            $('.hideMuteButtons').show();
         });
-        $('#hideMuteButtons').click(function() {
+        $('.hideMuteButtons').click(function() {
             $(".muteThread").hide();
             $(".muteUser").hide();
-            $('#hideMuteButtons').hide();
-            $('#showMuteButtons').show();
+            $('.hideMuteButtons').hide();
+            $('.showMuteButtons').show();
         });
-        if (location.search.split('g=')[1].split("&")[0] == "posts") {
+        if (gParameter == "posts" || gParameter == "postmessage") {
             var posterIds = [];
             var posterNames = [];
             for (var i = 0; i < items.users.length; i++) {
@@ -25,6 +29,31 @@ if (location.search.split('g=')[1].split("&")[0] == "posts" || location.search.s
                 posterNames.push(items.users[i].username);
             }
             mutePosts(posterIds, posterNames, items.muteQuotes);
+            $(window).load(function() {
+                if (location.hash.length > 1) {
+                    // Because posts are muted, table height is affected and the anchor's are out of alignment
+                    // Keep a copy of the hash, set it to a dummy value and then reset the hash post load fixes this
+                    var hash = location.hash;
+                    location.hash = "#aaaaaaa";
+                    location.hash = hash;
+                }
+            });
+            if (items.moderniseYoutubeVids) {
+                var youtubeVids = $("param[value^='http://www.youtube.com']");
+                for (var i = 0; i < youtubeVids.length; i++) {
+                    var urlComponents = $(youtubeVids[i]).val().split('/');
+                    var vidId = urlComponents[urlComponents.length - 1];
+                    if (vidId.indexOf("watch?v=") == 0) {
+                        vidId = vidId.substring(8, vidId.length);
+                    }
+                    if (vidId.indexOf("httpwatch?v=") == 0) {
+                        vidId = vidId.substring(8, vidId.length);
+                    }
+                    var parentElement = $(youtubeVids[i]).parent();
+                    parentElement.after('<iframe width="' + items.youtubeVideoWidth + '" height="' + items.youtubeVideoHeight + '" src="https://www.youtube.com/embed/' + vidId + '" frameborder="0" allowfullscreen></iframe>');
+                    parentElement.remove();
+                }
+            }
         } else {
             var threadIds = [];
             for (var i = 0; i < items.threads.length; i++) {
@@ -32,6 +61,8 @@ if (location.search.split('g=')[1].split("&")[0] == "posts" || location.search.s
             }
             muteThreads(threadIds);
         }
+
+
     });
 }
 
@@ -126,7 +157,9 @@ function mutePosts(posterIds, posterNames, muteQuotes) {
                 var usernameTd = $($(tableRows[i]).children()[0]);
                 var username = $(usernameTd.find('a')[1]).text();
                 var link = $(usernameTd.find('a')[1]).attr('href');
-                var userId = link.substring(33, link.length);
+                if (link != null) {
+                    var userId = link.substring(33, link.length);
+                }
                 var html = usernameTd.html();
                 var imgUrl = chrome.extension.getURL("images/music_off.png");
                 usernameTd.html(html + '<a href="javascript:void 0" class="muteUser" style="display:none" alt="Mute this user"><img style="height:20px" src="' + imgUrl + '"></a>');
@@ -167,6 +200,8 @@ function mutePosts(posterIds, posterNames, muteQuotes) {
 
         }
     }
+
+
     //Register an onclick handler for all the mute buttons
     $(".muteUser").click(function() {
         var usernameTd = $(this).parent();
