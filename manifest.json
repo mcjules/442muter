@@ -7,7 +7,7 @@
   "options_page": "options.html",
   "content_scripts": [
    {
-     "matches": ["http://au.fourfourtwo.com/forums/*"],
+     "matches": ["http://forum.insidesport.com.au/*"],
      "js": ["jquery.js", "mute.js"]
    }
  ],
