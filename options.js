@@ -4,6 +4,10 @@ function save_options() {
     records.moderniseYoutubeVids =$("#moderniseYoutubeVids")[0].checked;
     records.youtubeVideoHeight= $('#layout-options option:selected').attr('data-height');
     records.youtubeVideoWidth= $('#layout-options option:selected').attr('data-width');
+    records.fixAvatars =$("#fixAvatars")[0].checked;
+    records.squareAvatars =$("#squareAvatars")[0].checked;
+    records.avatarWidth =$("#avatarWidth").val();
+    records.avatarHeight =$("#avatarHeight").val();
     chrome.storage.sync.set(records, function() {
         // Update status to let user know options were saved.
         var status = document.getElementById('status');
@@ -38,7 +42,11 @@ function restore_options() {
         muteQuotes: false,
         moderniseYoutubeVids:false,
         youtubeVideoHeight:360,
-        youtubeVideoWidth:640
+        youtubeVideoWidth:640,
+        fixAvatars: false,
+        squareAvatars: false,
+        avatarWidth: '72',
+        avatarHeight: '72'
     }, function(items) {
         records = items;
         if (items.users.length == 0) {
@@ -70,6 +78,18 @@ function restore_options() {
         $("#moderniseYoutubeVids")[0].checked = items.moderniseYoutubeVids;
         $("#moderniseYoutubeVids").change();
         $('#layout-options option[data-height='+items.youtubeVideoHeight+']').attr('selected','selected');
+        $("#fixAvatars").change(function() {
+            if(this.checked == true) {
+              $('#avatar-options').show();
+            } else {
+              $('#avatar-options').hide();
+            }
+        })
+        $("#fixAvatars")[0].checked = items.fixAvatars;
+        $("#fixAvatars").change();
+        $("#squareAvatars")[0].checked = items.squareAvatars;
+        $("#avatarWidth").val(items.avatarWidth);
+        $("#avatarHeight").val(items.avatarHeight);
     });
 }
 document.addEventListener('DOMContentLoaded', restore_options);

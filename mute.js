@@ -1,17 +1,31 @@
 var pageType = detectPage();
-if (pageType != null) {
+
     chrome.storage.sync.get({
         users: [],
         threads: [],
         muteQuotes: false,
         moderniseYoutubeVids: false,
         youtubeVideoHeight: 360,
-        youtubeVideoWidth: 640
+        youtubeVideoWidth: 640,
+        fixAvatars: false,
+        squareAvatars: false,
+        avatarWidth: '72',
+        avatarHeight: '72'
     }, function(items) {
+      if (items.fixAvatars) {
+        var style = "width:"+items.avatarWidth+"px;height:"+items.avatarHeight+"px";
+        if(items.squareAvatars){
+          $('.i-photo img').attr('style',';border-radius:0%');
+          style +=';border-radius:0%';
+        }
 
-
+        $('.i-photo-large img').attr('style',style);
+        $('.i-photo-large span').attr('style',style);
+      }
+if (pageType != null) {
         if (pageType == "thread") {
-            $('div.i-pager').prepend('<span><a href="javascript:void 0" class="showMuteButtons">Show mute buttons</a><a href="javascript:void 0" class="hideMuteButtons" style="display:none">Hide mute buttons</a>');
+            $('#ctl00_ctlContentPlaceHolder_ctl00_ctl00_ctlTopic_ctl00_pnlPagingLeft1').append('<span><a href="javascript:void 0" class="showMuteButtons i-btn i-btn-2x i-btn-primary" style="padding: 11px 16px;font-size: 10pt;">Show mute buttons</a><a href="javascript:void 0" class="hideMuteButtons i-btn i-btn-2x i-btn-primary" style="padding: 11px 16px;display:none;">Hide mute buttons</a>');
+            $('#ctl00_ctlContentPlaceHolder_ctl00_ctl00_ctlTopic_ctl00_pnlPagingLeft2').append('<span><a href="javascript:void 0" class="showMuteButtons i-btn i-btn-2x i-btn-primary" style="padding: 11px 16px;font-size: 10pt;">Show mute buttons</a><a href="javascript:void 0" class="hideMuteButtons i-btn i-btn-2x i-btn-primary" style="padding: 11px 16px;display:none;">Hide mute buttons</a>');
             var posterIds = [];
             var posterNames = [];
             for (var i = 0; i < items.users.length; i++) {
@@ -49,8 +63,10 @@ if (pageType != null) {
                     parentElement.remove();
                 }
             }
+
         } else {
-            $('span.i-pager').prepend('<span><a href="javascript:void 0" class="showMuteButtons">Show mute buttons</a><a href="javascript:void 0" class="hideMuteButtons" style="display:none">Hide mute buttons</a>');
+            $('#ctl00_ctlContentPlaceHolder_ctl00_ctl00_ctlViewTopics_ctl00_pnlPagingLeft1').append('<span><a href="javascript:void 0" class="showMuteButtons i-btn i-btn-2x i-btn-primary" style="padding: 11px 16px;font-size: 10pt;">Show mute buttons</a><a href="javascript:void 0" class="hideMuteButtons i-btn i-btn-2x i-btn-primary" style="padding: 11px 16px; display:none;">Hide mute buttons</a>');
+            $('#ctl00_ctlContentPlaceHolder_ctl00_ctl00_ctlViewTopics_ctl00_pnlPagingLeft2').append('<span><a href="javascript:void 0" class="showMuteButtons i-btn i-btn-2x i-btn-primary" style="padding: 11px 16px;font-size: 10pt;">Show mute buttons</a><a href="javascript:void 0" class="hideMuteButtons i-btn i-btn-2x i-btn-primary" style="padding: 11px 16px; display:none;">Hide mute buttons</a>');
             var threadIds = [];
             for (var i = 0; i < items.threads.length; i++) {
                 threadIds.push(items.threads[i].threadId);
@@ -69,9 +85,8 @@ if (pageType != null) {
             $('.hideMuteButtons').hide();
             $('.showMuteButtons').show();
         });
-
+      }
     });
-}
 
 function muteThreads(threadIds) {
     var tableRows = $('table.i-table.if-topic-list').find('tr[id!=""][id]');
@@ -170,7 +185,8 @@ function mutePosts(posterIds, posterNames, muteQuotes) {
             }
         } else {
             //TODO: reimplement
-            // if (muteQuotes && !blockedPost) {
+            if (muteQuotes && !blockedPost) {
+              $($(tableRows[i]).children()[1]).find('div.Quote');
             //     //Read post to see if blocked name is being quoted
             //     if ($(tableRows[i]).attr('class') == 'post' || $(tableRows[i]).attr('class') == 'post_alt') {
             //         var postDiv = $(tableRows[i]).children('td[class="message"]');
@@ -201,7 +217,7 @@ function mutePosts(posterIds, posterNames, muteQuotes) {
             //         }
             //     }
             //
-            // }
+             }
 
         }
     }
@@ -228,6 +244,11 @@ function mutePosts(posterIds, posterNames, muteQuotes) {
             });
         });
     });
+
+    // var likeLink = $($('a.if-btn-like')[0]).attr('href');
+    // $.ajax({
+    //   url: likeLink
+    // });
 }
 
 
