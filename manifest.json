@@ -3,7 +3,7 @@
 
   "name": "442 muter",
   "description": "This extension allows you to mute annoying users on the AU fourfourtwo forums",
-  "version": "0.5",
+  "version": "0.6",
   "options_page": "options.html",
   "content_scripts": [
    {
